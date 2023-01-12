@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- Include the CesiumJS JavaScript and CSS files -->
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.101/Build/Cesium/Cesium.js"></script>
+  <link href="https://cesium.com/downloads/cesiumjs/releases/1.101/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+  <style type="text/css">
+    #toggle-model { z-index: 1; position: fixed; top: 10px; left: 10px; }
+    #toggle-pcd { z-index: 1; position: fixed; top: 50px; left: 10px; }
+    body {
+        margin: 0px;
+        overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <button id="toggle-model">見草トンネル (3Dモデル)</button>
+  <button id="toggle-pcd">見草トンネル (点群)</button>
+  <div id="cesiumContainer"></div>
+  <script>
+    // Your access token can be found at: https://ion.cesium.com/tokens.
+    // This is the default access token from your ion account
+
+    Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJhNmJmMTkxYi0zNjBjLTRiZDctYTJjMi1kYWI4YTE0NDVhZWQiLCJpZCI6MTAwNzY1LCJpYXQiOjE2NTc1MzE3OTV9.DN7YBLuXtf9TCY6NLlM_en_KTPlDZJ2A1QajiGaK_fY';
+
+    // Initialize the Cesium Viewer in the HTML element with the `cesiumContainer` ID.
+    const viewer = new Cesium.Viewer('cesiumContainer', {
+      terrainProvider: Cesium.createWorldTerrain()
+    });
+    viewer.scene.globe.translucency.frontFaceAlpha = 0.5;
+    viewer.scene.globe.translucency.backFaceAlpha = 0.5;
+    viewer.scene.globe.translucency.enabled = true;
+    viewer.scene.screenSpaceCameraController.enableCollisionDetection = false;
+
+    const pcdTileset = viewer.scene.primitives.add(
+        new Cesium.Cesium3DTileset({
+            url: Cesium.IonResource.fromAssetId(1491360),
+        })
+    );
+
+    const modelTileset = viewer.scene.primitives.add(
+        new Cesium.Cesium3DTileset({
+            url: Cesium.IonResource.fromAssetId(1491319),
+        })
+    );
+    
+    viewer.flyTo(modelTileset);
+
+    document.getElementById("toggle-model").onclick = function () {
+        modelTileset.show = !modelTileset.show
+    }
+
+    document.getElementById("toggle-pcd").onclick = function () {
+        pcdTileset.show = !pcdTileset.show
+    }
+  </script>
+ </div>
+</body>
+</html>

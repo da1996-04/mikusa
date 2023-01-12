@@ -6,25 +6,37 @@
   <script src="https://cesium.com/downloads/cesiumjs/releases/1.101/Build/Cesium/Cesium.js"></script>
   <link href="https://cesium.com/downloads/cesiumjs/releases/1.101/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
   <style type="text/css">
-    #toggle-model { z-index: 1; position: fixed; top: 10px; left: 10px; }
-    #toggle-pcd { z-index: 1; position: fixed; top: 50px; left: 10px; }
     body {
         margin: 0px;
         overflow: hidden;
     }
+    #check-m1 { z-index: 1; position: fixed; top: 10px; left: 10px; background-color: #303336; color: #edffff; font: 13.3px Arial; padding: 1px 6px; border-radius: 4px;}
+    #check-m2 { z-index: 1; position: fixed; top: 50px; left: 10px; background-color: #303336; color: #edffff; font: 13.3px Arial; padding: 1px 6px; border-radius: 4px;}
+    #check-m3 { z-index: 1; position: fixed; top: 90px; left: 10px; background-color: #303336; color: #edffff; font: 13.3px Arial; padding: 1px 6px; border-radius: 4px;}
+    #check-m4 { z-index: 1; position: fixed; top: 130px; left: 10px; background-color: #303336; color: #edffff; font: 13.3px Arial; padding: 1px 6px; border-radius: 4px;}
   </style>
 </head>
 <body>
-  <button id="toggle-model">見草トンネル (3Dモデル)</button>
-  <button id="toggle-pcd">見草トンネル (点群)</button>
   <div id="cesiumContainer"></div>
+  <div id="check-m1">
+    <input type="checkbox" id="m1" name="m1" onchange="m1()" checked/>
+    <label for="m1">見草トンネル（覆工）</label>
+  </div>
+  <div id="check-m2">
+    <input type="checkbox" id="m2" name="m2" onchange="m2()" checked/>
+    <label for="m2">見草トンネル（床）</label>
+  </div>
+  <div id="check-m3">
+    <input type="checkbox" id="m3" name="m3" onchange="m3()" checked/>
+    <label for="m3">地質縦断図</label>
+  </div>
+  <div id="check-m4">
+    <input type="checkbox" id="m4" name="m4" onchange="m4()" checked/>
+    <label for="m4">見草トンネル（点群）</label>
+  </div>
   <script>
-    // Your access token can be found at: https://ion.cesium.com/tokens.
-    // This is the default access token from your ion account
-
     Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJhNmJmMTkxYi0zNjBjLTRiZDctYTJjMi1kYWI4YTE0NDVhZWQiLCJpZCI6MTAwNzY1LCJpYXQiOjE2NTc1MzE3OTV9.DN7YBLuXtf9TCY6NLlM_en_KTPlDZJ2A1QajiGaK_fY';
 
-    // Initialize the Cesium Viewer in the HTML element with the `cesiumContainer` ID.
     const viewer = new Cesium.Viewer('cesiumContainer', {
       terrainProvider: Cesium.createWorldTerrain()
     });
@@ -33,27 +45,48 @@
     viewer.scene.globe.translucency.enabled = true;
     viewer.scene.screenSpaceCameraController.enableCollisionDetection = false;
 
-    const pcdTileset = viewer.scene.primitives.add(
-        new Cesium.Cesium3DTileset({
-            url: Cesium.IonResource.fromAssetId(1491360),
-        })
+    const liningTileset = viewer.scene.primitives.add(
+      new Cesium.Cesium3DTileset({
+        url: Cesium.IonResource.fromAssetId(1495705),
+      })
     );
 
-    const modelTileset = viewer.scene.primitives.add(
-        new Cesium.Cesium3DTileset({
-            url: Cesium.IonResource.fromAssetId(1491319),
-        })
+    const floorTileset = viewer.scene.primitives.add(
+      new Cesium.Cesium3DTileset({
+        url: Cesium.IonResource.fromAssetId(1495704),
+      })
+    );
+
+    const sectionTileset = viewer.scene.primitives.add(
+      new Cesium.Cesium3DTileset({
+        url: Cesium.IonResource.fromAssetId(1495709),
+      })
+    );
+
+    const pcdTileset = viewer.scene.primitives.add(
+      new Cesium.Cesium3DTileset({
+        url: Cesium.IonResource.fromAssetId(1496032),
+      })
     );
     
-    viewer.flyTo(modelTileset);
+    viewer.flyTo(liningTileset);
 
-    document.getElementById("toggle-model").onclick = function () {
-        modelTileset.show = !modelTileset.show
+    function m1() {
+      liningTileset.show = document.getElementById("m1").checked
     }
 
-    document.getElementById("toggle-pcd").onclick = function () {
-        pcdTileset.show = !pcdTileset.show
+    function m2() {
+      floorTileset.show = document.getElementById("m2").checked
     }
+
+    function m3() {
+      sectionTileset.show = document.getElementById("m3").checked
+    }
+
+    function m4() {
+      pcdTileset.show = document.getElementById("m4").checked
+    }
+
   </script>
  </div>
 </body>

@@ -128,6 +128,18 @@
       })
     );
 
+    liningTileset.readyPromise.then(tileset => {
+      const cart3 = tileset.boundingSphere.center
+      const cart3_ = new Cesium.Cartesian3()
+      Cesium.Cartesian3.negate(cart3, cart3_)
+      const directionalLight = new Cesium.DirectionalLight({
+        direction: cart3_,
+        color: new Cesium.Color(1, 1, 1),
+        intensity: 2.0
+      })
+      viewer.scene.light = directionalLight
+    })
+
     function flyTo () {
       viewer.flyTo(liningTileset);
     }
@@ -191,8 +203,6 @@
 
     function handleLeft (event) {
         const cartesian = scene.pickPosition(event.position)
-        console.log(scene.pickPositionSupported)
-        console.log(cartesian)
         if (scene.pickPositionSupported && Cesium.defined(cartesian)) {
             if (drawing) {
             endPosition = cartesian
@@ -271,9 +281,18 @@
         }
     }
 
+    function handleLeftDouble (event) {
+      const cartesian = scene.pickPosition(event.position)
+      const pickedObject = viewer.scene.pick(event.position)
+      if (Cesium.defined(pickedObject)) {
+        viewer.entities.remove(pickedObject.id)
+      }
+    }
+
     handler.setInputAction(handleLeft, Cesium.ScreenSpaceEventType.LEFT_CLICK)
     handler.setInputAction(handleRight, Cesium.ScreenSpaceEventType.RIGHT_CLICK)
     handler.setInputAction(handleMove, Cesium.ScreenSpaceEventType.MOUSE_MOVE)
+    handler.setInputAction(handleLeftDouble, Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK)
 
     polyline = viewer.entities.add({
         polyline: {
